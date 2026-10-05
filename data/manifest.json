@@ -1,0 +1,103 @@
+{
+  "_comment": "Every dataset used by Ghost Drains. Pipeline refuses to run if checksums differ. See docs/DATA_SOURCES.md.",
+  "datasets": [
+    {
+      "id": "DS-01",
+      "name": "Copernicus GLO-30 tiles covering study bbox",
+      "url": "https://copernicus-dem-30m.s3.amazonaws.com/",
+      "retrieved_at": "2026-10-06T02:20:00Z",
+      "license": "Copernicus licence; free, attribution if adapted",
+      "attribution": "Produced using Copernicus WorldDEM-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018",
+      "sha256": "a58736cc901e3baca38721d0dd4b1048bf2a67328592e93420c7413d5012ae02",
+      "crs": "EPSG:4326",
+      "resolution": "1 arc-second (~30 m)",
+      "bbox": [77.0, 12.0, 78.0, 14.0],
+      "processing": ["p01_fetch", "p02_clip_reproject"],
+      "notes": "Surface model (includes buildings/trees). Tiles dem_n12_e077.tif and dem_n13_e077.tif."
+    },
+    {
+      "id": "DS-02",
+      "name": "FABDEM v1-2 tiles covering study bbox",
+      "url": null,
+      "retrieved_at": null,
+      "license": "CC BY-NC-SA 4.0",
+      "attribution": "FABDEM © University of Bristol / Fathom; derived from Copernicus WorldDEM-30",
+      "sha256": null,
+      "crs": "EPSG:4326",
+      "resolution": "1 arc-second (~30 m)",
+      "bbox": null,
+      "processing": ["p01_fetch", "p02_clip_reproject"],
+      "notes": "Bare-earth candidate. Download location and version to confirm [U]."
+    },
+    {
+      "id": "DS-03",
+      "name": "Bengaluru Stormwater Drains Maps (primary, secondary, tertiary, combined, 2022)",
+      "url": "https://data.opencity.in/dataset/bengaluru-stormwater-drains-maps",
+      "retrieved_at": "2026-10-06T02:17:00Z",
+      "license": "Other (Public Domain) per portal label; original publisher terms unconfirmed [U]",
+      "attribution": "Bengaluru Stormwater Drains Maps © KSRSAC via OpenCity.in",
+      "sha256": "43063312663ee6080817bda73166ee3cb88e78a37b48869504a8751093388004",
+      "crs": "EPSG:4326",
+      "resolution": "vector",
+      "bbox": [77.45, 12.85, 77.75, 13.10],
+      "processing": ["p06_vectors"],
+      "notes": "KML format. Includes primary_swd.kml, secondary_swd.kml, tertiary_swd.kml."
+    },
+    {
+      "id": "DS-05",
+      "name": "OpenStreetMap Bengaluru extract (lakes, waterways, roads, buildings)",
+      "url": null,
+      "retrieved_at": null,
+      "license": "ODbL",
+      "attribution": "© OpenStreetMap contributors",
+      "sha256": null,
+      "crs": "EPSG:4326",
+      "resolution": "vector",
+      "bbox": null,
+      "processing": ["p06_vectors"],
+      "notes": "Overpass API extract. Tag coverage for drains/lakes in Bengaluru unknown [U]."
+    },
+    {
+      "id": "DS-08",
+      "name": "Mapterhorn terrain tiles (spike S1 only)",
+      "url": "https://mapterhorn.com/",
+      "retrieved_at": null,
+      "license": "BSD-3 code; data from Copernicus GLO-30",
+      "attribution": "© Mapterhorn https://mapterhorn.com/attribution",
+      "sha256": null,
+      "crs": "EPSG:3857",
+      "resolution": "~30 m (GLO-30 base, up to z12)",
+      "bbox": null,
+      "processing": [],
+      "notes": "Terrarium-encoded WebP PMTiles. Used for spike terrain only, not analysis."
+    },
+    {
+      "id": "DS-09",
+      "name": "EOX Sentinel-2 cloudless imagery",
+      "url": "https://tiles.maps.eox.at/wmts/",
+      "retrieved_at": null,
+      "license": "CC BY-NC-SA 4.0 (2018-2025 data); CC BY 4.0 (2016 data)",
+      "attribution": "Sentinel-2 cloudless https://s2maps.eu by EOX IT Services GmbH (Contains modified Copernicus Sentinel data [YEAR])",
+      "sha256": null,
+      "crs": "EPSG:3857",
+      "resolution": "~10 m",
+      "bbox": null,
+      "processing": [],
+      "notes": "Non-commercial use only. Year-specific attribution required."
+    },
+    {
+      "id": "DS-10",
+      "name": "Reported flood sites, 4-6 Sept 2022",
+      "url": null,
+      "retrieved_at": null,
+      "license": "Public citations",
+      "attribution": "Individual source URLs per site",
+      "sha256": null,
+      "crs": "EPSG:4326",
+      "resolution": "point",
+      "bbox": null,
+      "processing": [],
+      "notes": "Geocode each site from OSM. Selection bias: mostly roads and apartments."
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+# Ghost Drains pipeline configuration
+# All numeric thresholds come from validation, not guesswork.
+# Parameters marked TODO_UNSET must be set from validation results
+# before production runs. The pipeline will fail loudly if they are unset.
+
+# Study area bounding box [lon_min, lat_min, lon_max, lat_max]
+# Bengaluru approximate extent - refine after DEM inspection
+study_bbox: [77.45, 12.85, 77.75, 13.10]
+
+# Coordinate reference systems
+crs:
+  analysis: "EPSG:32643"   # UTM zone 43N (metric) - confirm with pyproj [U]
+  display: "EPSG:3857"     # Web Mercator (display grid)
+  source: "EPSG:4326"      # WGS84 (input data)
+
+# DEM source selection (set after A/B validation V3)
+dem_source: "DS-01"   # Copernicus GLO-30
+
+# Display grid dimensions
+grid:
+  width: 1024
+  height: 1024
+  cell_size_3857_m: 30.0
+  nodata: -9999.0
+
+# Hydrology parameters - ALL from validation, never guessed
+hydrology:
+  # Flow accumulation threshold (cell count) for ghost drain extraction
+  # 500 cells at 30m resolution = 0.45 km2 contributing area
+  accumulation_threshold: 500
+
+  # Buffer distance (metres) for gap analysis
+  # 60m buffer accounts for 2 cells + GPS/KML positional uncertainty
+  buffer_m: 60.0
+
+  # HAND band boundaries (metres) for susceptibility classification
+  hand_bands: [0, 2, 5, 10]
+
+  # Depression fill method
+  fill_method: "priority_flood"  # Barnes, Lehman, Mulla (2014)
+
+  # Flow routing method
+  routing: "d8"
+
+# Simulation parameters (illustrative only)
+simulation:
+  gravity: 9.81           # m/s^2 (standard constant)
+  default_rain_mm_h: 50   # UI slider default; user-adjustable
+  pipe_length_m: 30.0     # equals cell size
+  pipe_area_m2: 900.0     # cell_size^2
+  max_dt_s: 0.1           # stability clamp; verify against CFL bound
+
+# Data paths (relative to project root)
+paths:
+  raw: "data/raw"
+  interim: "data/interim"
+  processed: "data/processed"
+  output: "web/public/data"
+  manifest: "data/manifest.json"

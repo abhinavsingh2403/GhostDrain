@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Data (tracked via manifest.json checksums)
+data/raw/
+data/interim/
+data/processed/
+!data/manifest.json
+
+# Build
+web/dist/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Graphify output (regenerable)
+graphify-out/
+
+# Test artifacts
+coverage/
+.pytest_cache/

@@ -1,0 +1,253 @@
+{
+  "type": "FeatureCollection",
+  "name": "reported_flood_sites_sept_2022",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "description": "Reported flood-affected locations in Bengaluru, 4-6 Sept 2022. Sourced and geocoded from OSM.",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "FS-01",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.67202,
+          12.93714
+        ]
+      },
+      "properties": {
+        "id": "FS-01",
+        "name": "Bellandur Lake Overflow",
+        "locality": "Bellandur",
+        "date": "2022-09-05",
+        "source_publisher": "The Quint",
+        "source_url": "https://www.thequint.com/south-india/rains-in-bengaluru-continue-to-wreak-havoc-three-lakes-overflow-into-homes",
+        "notes": "Lake overflow into surrounding roads and apartments"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FS-02",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.68117,
+          12.92803
+        ]
+      },
+      "properties": {
+        "id": "FS-02",
+        "name": "Outer Ring Road near Ecospace",
+        "locality": "Bellandur / ORR",
+        "date": "2022-09-05",
+        "source_publisher": "The News Minute",
+        "source_url": "https://www.thenewsminute.com/article/bengaluru-flooded-again-after-rains-marathahalli-orr-under-water-167535",
+        "notes": "Severe waterlogging on tech corridor arterial road"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FS-03",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.68683,
+          12.90622
+        ]
+      },
+      "properties": {
+        "id": "FS-03",
+        "name": "Rainbow Drive Layout",
+        "locality": "Sarjapur Road",
+        "date": "2022-09-05",
+        "source_publisher": "Citizen Matters",
+        "source_url": "https://citizenmatters.in/rainbow-drive-layout-or-lake-bengaluru-flood-prone-neighbourhoods/",
+        "notes": "Inundated valley layout requiring boat and tractor evacuation"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FS-04",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.74884,
+          12.96551
+        ]
+      },
+      "properties": {
+        "id": "FS-04",
+        "name": "Whitefield Main Road",
+        "locality": "Whitefield",
+        "date": "2022-09-05",
+        "source_publisher": "The Hindu",
+        "source_url": "https://www.thehindu.com/news/national/karnataka/bengaluru-rains-mahadevapura-zone-severely-affected-by-flooding-says-bbmp-chief-commissioner/article65856481.ece",
+        "notes": "Arterial road inundation impacting commute in Mahadevapura zone"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FS-05",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.68055,
+          12.94546
+        ]
+      },
+      "properties": {
+        "id": "FS-05",
+        "name": "Yemalur Main Road",
+        "locality": "Yemalur",
+        "date": "2022-09-05",
+        "source_publisher": "Down To Earth",
+        "source_url": "https://www.downtoearth.org.in/climate-change/bengaluru-floods-city-s-stormwater-drains-are-not-good-enough-government-has-known-it-for-long-84800",
+        "notes": "Waterlogging near Bellandur lake backwaters and natural catchment"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FS-06",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.62237,
+          12.91682
+        ]
+      },
+      "properties": {
+        "id": "FS-06",
+        "name": "Central Silk Board Junction",
+        "locality": "Silk Board / BTM",
+        "date": "2022-09-05",
+        "source_publisher": "The Indian Express",
+        "source_url": "https://indianexpress.com/article/cities/bangalore/bengaluru-rain-halt-floods-waterlogging-sarjapur-koramangala-madiwala-8137227/",
+        "notes": "Major transport junction and surrounding arterial roadways inundated"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FS-07",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.69842,
+          12.95526
+        ]
+      },
+      "properties": {
+        "id": "FS-07",
+        "name": "Marathahalli ORR",
+        "locality": "Marathahalli",
+        "date": "2022-09-05",
+        "source_publisher": "The News Minute",
+        "source_url": "https://www.thenewsminute.com/article/bengaluru-flooded-again-after-rains-marathahalli-orr-under-water-167535",
+        "notes": "Outer Ring Road subways and service lanes submerged"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FS-08",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.73926,
+          12.94835
+        ]
+      },
+      "properties": {
+        "id": "FS-08",
+        "name": "Varthur Lake Inundation Area",
+        "locality": "Varthur",
+        "date": "2022-09-05",
+        "source_publisher": "The Quint",
+        "source_url": "https://www.thequint.com/south-india/rains-in-bengaluru-continue-to-wreak-havoc-three-lakes-overflow-into-homes",
+        "notes": "Downstream lake basin waterlogging and residential overflow"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FS-09",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.69203,
+          12.89893
+        ]
+      },
+      "properties": {
+        "id": "FS-09",
+        "name": "Halanayakanahalli Lake Breach Area",
+        "locality": "Mahadevapura Zone",
+        "date": "2022-09-05",
+        "source_publisher": "ReliefWeb / UN OCHA (MHA Report)",
+        "source_url": "https://reliefweb.int/report/india/ministry-home-affairs-disaster-management-division-national-emergency-response-centre-situation-report-regarding-flood-heavy-rainfall-country-06092022-1800-hrs",
+        "notes": "Official Ministry of Home Affairs flood situation report record"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FS-10",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.73799,
+          12.96919
+        ]
+      },
+      "properties": {
+        "id": "FS-10",
+        "name": "Borewell Road",
+        "locality": "Whitefield",
+        "date": "2022-09-05",
+        "source_publisher": "The Hindu",
+        "source_url": "https://www.thehindu.com/news/national/karnataka/bengaluru-rains-mahadevapura-zone-severely-affected-by-flooding-says-bbmp-chief-commissioner/article65856481.ece",
+        "notes": "Traffic advisory issued due to road inundation in IT zone"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FS-11",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.73894,
+          12.93925
+        ]
+      },
+      "properties": {
+        "id": "FS-11",
+        "name": "Balagere Main Road",
+        "locality": "Balagere / Varthur",
+        "date": "2022-09-05",
+        "source_publisher": "The Times of India",
+        "source_url": "https://timesofindia.indiatimes.com/city/bengaluru/75-areas-hit-third-heaviest-rainfall-in-september-in-bengaluru-in-75-years/articleshow/94013558.cms",
+        "notes": "Connecting road between Panathur and Varthur heavily waterlogged"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FS-12",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.63886,
+          12.91162
+        ]
+      },
+      "properties": {
+        "id": "FS-12",
+        "name": "HSR Layout Sector 6 & 7",
+        "locality": "HSR Layout",
+        "date": "2022-09-05",
+        "source_publisher": "The Indian Express",
+        "source_url": "https://indianexpress.com/article/cities/bangalore/bengaluru-rain-halt-floods-waterlogging-sarjapur-koramangala-madiwala-8137227/",
+        "notes": "Low-lying residential sectors inundated following stormwater drain surcharge"
+      }
+    }
+  ]
+}
