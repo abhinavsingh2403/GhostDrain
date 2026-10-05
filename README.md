@@ -146,6 +146,39 @@ Every code modification must pass 50 automated tests across Python and TypeScrip
 
 ---
 
+## Project Roadmap & Path to 100% Completion
+
+The project is currently **~75–80% complete** relative to the foundational specifications ([`docs/PRD.md`](docs/PRD.md) and [`docs/ROADMAP_TASKS.md`](docs/ROADMAP_TASKS.md)).
+
+### Completed Milestones
+- [x] **M0: Repository & Scaffolding**: Rigorous typing, checksum-enforced `manifest.json`, and hardware profiling.
+- [x] **M1: Technical Spikes (S1–S5)**: 3D MapLibre terrain, animated simulation canvas draping, synthetic DEM validation, and Mei et al. mass conservation.
+- [x] **M2: Full-City Offline Data Pipeline (P1–P8)**: Copernicus GLO-30 mosaic & UTM 43N reprojection, WhiteboxTools Priority-Flood conditioning (21.69 m max depth preserved), D8 flow accumulation, HAND raster, and display grid packaging.
+- [x] **M3: 3D Visualization Scene**: High-res ESRI satellite drape, hillshading, glassmorphism telemetry HUD, and 3D hotspot fly-to navigation.
+- [x] **M4: Core Vector Intelligence**: 1,028 natural ghost streamlines, 6,835 official SWD lines, and 871 STRtree spatial gap segments.
+- [x] **M5: Illustrative Rain Replay**: 60 FPS GPU/CPU virtual-pipe shallow-water physics with 1,000 screen-space micro-streamlines.
+- [x] **F-08: Validation Hotspots**: 12 geocoded Sept 2022 inundation sites with radar indicators and primary source citations.
+- [x] **F-09: Methods & Honesty Panel**: In-app modal enforcing scientific boundaries and anti-hallucination terminology.
+
+### Remaining Tasks for 100% Completion
+- [ ] **1. Client-Side Ponding & HAND Raster Decoding (`F-05`)**:
+  - In `web/src/map/layers.ts`, add WebGL/Canvas texture decoders for `web/public/data/depress.f32.bin` and `hand.f32.bin`.
+  - Provide interactive color ramp overlays for terrain depression ponding and HAND susceptibility bands ([0–2 m], [2–5 m], [5–10 m]).
+- [ ] **2. Interactive "What-If" Barrier Tool (`F-07`)**:
+  - Implement a canvas click-and-drag line tool allowing users to paint an artificial elevation wall (+5 m ridge) onto `simState.terrain`.
+  - Dynamically observe runoff re-routing around the barrier in real time, with a one-click reset to baseline topography.
+- [ ] **3. Statistical Validation Lift Metric Reporting (`M6`)**:
+  - Implement the **V2 Flood-Site Lift** calculation: measure the ratio of reported flood sites situated in top HAND/ponding zones against a null model of random built-up points across Bengaluru.
+  - Display the quantitative lift factor directly inside the Telemetry/Validation HUD.
+- [ ] **4. Full URL Hash Synchronization (`F-10`)**:
+  - Synchronize active checkbox states (`#z/lat/lon?ghost=1&swd=1&gap=1&rain=50`) so custom analysis views are shareable via direct URL.
+- [ ] **5. Offline Expo PWA / Service Worker Bundle (`F-11`)**:
+  - Implement offline tile and asset caching via service worker for zero-network expo displays.
+- [ ] **6. Historical Lake Extent & "Lost Water" Slider (`F-12`, Stretch)**:
+  - Ingest 1960s Survey of India / ISRO historical lake boundaries to provide a before/after visualization of lost catchment retention.
+
+---
+
 ## License & Attribution
 
 - **Code**: MIT License.
