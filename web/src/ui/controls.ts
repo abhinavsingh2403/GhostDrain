@@ -15,6 +15,7 @@ import { BENGALURU_CENTER, DEFAULT_ZOOM } from '../constants';
 import { toggleLayer, LAYER_IDS } from '../map/layers';
 import { FpsMeter } from './fps-meter';
 import { LIMITATIONS_TEXT } from './limitations';
+import { parseHashState, syncHashState, type AppHashState } from './hash-state';
 
 export interface SimController {
   isRunning: () => boolean;
@@ -23,6 +24,9 @@ export interface SimController {
   getRainRate: () => number;
   resetSim: () => void;
   getSimTime: () => number;
+  isBarrierMode?: () => boolean;
+  toggleBarrierMode?: () => boolean;
+  resetTerrain?: () => void;
 }
 
 export function initControls(map: maplibregl.Map, simController?: SimController): void {
@@ -74,7 +78,16 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
       <div style="display: flex; justify-content: space-between;"><span>Bearing:</span> <span id="telemetry-bearing" style="color: #f1f5f9; font-family: monospace;">0°</span></div>
       <div style="display: flex; justify-content: space-between;"><span>Zoom:</span> <span id="telemetry-zoom" style="color: #f1f5f9; font-family: monospace;">${DEFAULT_ZOOM}</span></div>
     </div>
-    <div style="display: flex; gap: 6px; margin-top: 12px;">
+    <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 6px; padding: 6px 8px; margin-top: 8px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 9px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">V2 Empirical Lift</span>
+        <span style="font-size: 10px; font-weight: 700; color: #38bdf8; background: rgba(56, 189, 248, 0.15); padding: 1px 5px; border-radius: 4px;">6.1× vs Null</span>
+      </div>
+      <div style="font-size: 9px; color: #cbd5e1; margin-top: 3px; line-height: 1.3;">
+        91.7% of Sept 2022 flood points align in high-susceptibility zones (&le;2m HAND) vs 15% city baseline.
+      </div>
+    </div>
+    <div style="display: flex; gap: 6px; margin-top: 10px;">
       <button id="btn-orbit" style="flex: 1; padding: 7px 10px; font-size: 11px; font-weight: 600; background: #0284c7; color: white; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; box-shadow: 0 2px 6px rgba(2, 132, 199, 0.4);">Start 3D Orbit</button>
       <button id="btn-reset" style="padding: 7px 10px; font-size: 11px; background: rgba(51, 65, 85, 0.85); color: #e2e8f0; border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 6px; cursor: pointer;">Reset</button>
     </div>
@@ -149,43 +162,79 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
   const simCard = document.createElement('div');
   simCard.id = 'sim-layers-card';
   simCard.style.position = 'absolute';
-  simCard.style.top = '244px';
+  simCard.style.top = '310px';
   simCard.style.left = '16px';
   simCard.style.pointerEvents = 'auto';
-  simCard.style.background = 'linear-gradient(145deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.88) 100%)';
+  simCard.style.background = 'linear-gradient(145deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.90) 100%)';
   simCard.style.backdropFilter = 'blur(12px)';
   simCard.style.setProperty('-webkit-backdrop-filter', 'blur(12px)');
   simCard.style.border = '1px solid rgba(56, 189, 248, 0.25)';
   simCard.style.borderRadius = '10px';
-  simCard.style.padding = '14px 16px';
-  simCard.style.width = '230px';
+  simCard.style.padding = '12px 14px';
+  simCard.style.width = '240px';
+  simCard.style.maxHeight = 'calc(100vh - 330px)';
+  simCard.style.overflowY = 'auto';
   simCard.style.boxShadow = '0 12px 24px -4px rgba(0, 0, 0, 0.45)';
 
   simCard.innerHTML = `
-    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #38bdf8; margin-bottom: 10px; letter-spacing: 0.06em;">Visual Overlays</div>
-    <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; margin-bottom: 7px; cursor: pointer; color: #f1f5f9;">
+    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #38bdf8; margin-bottom: 8px; letter-spacing: 0.06em;">Visual Overlays</div>
+    <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; margin-bottom: 6px; cursor: pointer; color: #f1f5f9;">
       <input type="checkbox" id="toggle-flood-sites" checked style="accent-color: #f43f5e; cursor: pointer;" />
       <span style="color: #fda4af; font-weight: bold;">●</span> 2022 Flood Sites (Radar)
     </label>
-    <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; margin-bottom: 7px; cursor: pointer; color: #f1f5f9;">
+    <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; margin-bottom: 6px; cursor: pointer; color: #f1f5f9;">
       <input type="checkbox" id="toggle-ghost-drains" checked style="accent-color: #06b6d4; cursor: pointer;" />
       <span style="color: #67e8f9; font-weight: bold;">―</span> Ghost Drains (Terrain)
     </label>
-    <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; margin-bottom: 7px; cursor: pointer; color: #f1f5f9;">
+    <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; margin-bottom: 6px; cursor: pointer; color: #f1f5f9;">
       <input type="checkbox" id="toggle-official-swd" checked style="accent-color: #f59e0b; cursor: pointer;" />
       <span style="color: #fcd34d; font-weight: bold;">―</span> Official Storm Drains
     </label>
-    <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; margin-bottom: 7px; cursor: pointer; color: #f1f5f9;">
+    <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; margin-bottom: 6px; cursor: pointer; color: #f1f5f9;">
       <input type="checkbox" id="toggle-gap-view" checked style="accent-color: #ef4444; cursor: pointer;" />
       <span style="color: #fca5a5; font-weight: bold;">―</span> Gap Analysis
     </label>
-    <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; margin-bottom: 10px; cursor: pointer; color: #f1f5f9;">
+    <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; margin-bottom: 6px; cursor: pointer; color: #f1f5f9;">
       <input type="checkbox" id="toggle-water-sim" checked style="accent-color: #38bdf8; cursor: pointer;" />
       <span style="color: #38bdf8; font-weight: bold;">➔</span> Rain Flow Arrows & Drape
     </label>
 
-    <div style="border-top: 1px solid rgba(148, 163, 184, 0.15); padding-top: 10px; margin-top: 8px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+    <!-- F-05 Ponding & HAND Layers with plain-language legends -->
+    <div style="border-top: 1px solid rgba(148, 163, 184, 0.12); padding-top: 6px; margin-top: 6px;">
+      <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; margin-bottom: 2px; cursor: pointer; color: #f1f5f9;">
+        <input type="checkbox" id="toggle-ponding" style="accent-color: #0284c7; cursor: pointer;" />
+        <span style="color: #38bdf8; font-weight: bold;">▦</span> Natural Ponding Depressions
+      </label>
+      <div style="font-size: 9px; color: #94a3b8; margin-left: 20px; margin-bottom: 6px; line-height: 1.2;">
+        Aquatic sapphire ramp (0.05m to 21m sinks)
+      </div>
+
+      <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; margin-bottom: 2px; cursor: pointer; color: #f1f5f9;">
+        <input type="checkbox" id="toggle-hand" style="accent-color: #10b981; cursor: pointer;" />
+        <span style="color: #34d399; font-weight: bold;">▦</span> HAND Susceptibility (Nobre et al.)
+      </label>
+      <div style="font-size: 9px; color: #94a3b8; margin-left: 20px; margin-bottom: 6px; line-height: 1.2;">
+        &le;2m High (Cyan) | 2–5m Mod (Emerald) | 5–10m Low
+      </div>
+    </div>
+
+    <!-- F-07 What-If Ridge Placement Tool -->
+    <div style="border-top: 1px solid rgba(148, 163, 184, 0.15); padding-top: 8px; margin-top: 6px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #38bdf8; letter-spacing: 0.05em;">What-If Ridge Barrier</span>
+        <span id="badge-barrier-status" style="font-size: 9px; color: #94a3b8; background: rgba(51,65,85,0.6); padding: 1px 5px; border-radius: 4px;">Off</span>
+      </div>
+      <div style="display: flex; gap: 6px; margin-bottom: 4px;">
+        <button id="btn-toggle-barrier" style="flex: 1; padding: 6px 6px; font-size: 10px; font-weight: 600; background: rgba(14, 165, 233, 0.25); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; border-radius: 6px; cursor: pointer; transition: all 0.2s;">🧱 Draw Ridge (+5m)</button>
+        <button id="btn-reset-terrain" style="padding: 6px 8px; font-size: 10px; background: rgba(51, 65, 85, 0.85); color: #e2e8f0; border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 6px; cursor: pointer;">↺ Reset</button>
+      </div>
+      <div style="font-size: 9px; color: #64748b; line-height: 1.2;">
+        Click map to raise terrain +5m; blocks & reroutes rain flow.
+      </div>
+    </div>
+
+    <div style="border-top: 1px solid rgba(148, 163, 184, 0.15); padding-top: 8px; margin-top: 8px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
         <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #38bdf8; letter-spacing: 0.05em;">Rain Simulation</span>
         <span style="font-size: 9px; color: #94a3b8; background: rgba(51,65,85,0.6); padding: 1px 5px; border-radius: 4px;">Mei et al. GPU</span>
       </div>
@@ -356,11 +405,12 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
     if (e.target === modal) modal.style.display = 'none';
   });
 
-  // Layer toggles
+  // Layer toggles with URL hash sync
   const hookToggle = (checkboxId: string, layerId: string) => {
     const el = document.getElementById(checkboxId) as HTMLInputElement | null;
     el?.addEventListener('change', () => {
       toggleLayer(map, layerId, el.checked);
+      updateUrlHash();
     });
   };
   hookToggle('toggle-flood-sites', LAYER_IDS.FLOOD_SITES);
@@ -368,6 +418,38 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
   hookToggle('toggle-official-swd', LAYER_IDS.OFFICIAL_SWD);
   hookToggle('toggle-gap-view', LAYER_IDS.GAP_VIEW);
   hookToggle('toggle-water-sim', LAYER_IDS.WATER_SIM);
+  hookToggle('toggle-ponding', LAYER_IDS.PONDING);
+  hookToggle('toggle-hand', LAYER_IDS.HAND);
+
+  // What-If Ridge Barrier tool interactions (F-07 / M6)
+  const barrierBtn = document.getElementById('btn-toggle-barrier') as HTMLButtonElement | null;
+  const resetTerrainBtn = document.getElementById('btn-reset-terrain') as HTMLButtonElement | null;
+  const barrierBadge = document.getElementById('badge-barrier-status');
+
+  barrierBtn?.addEventListener('click', () => {
+    if (!simController?.toggleBarrierMode) return;
+    const active = simController.toggleBarrierMode();
+    if (barrierBtn) {
+      barrierBtn.textContent = active ? '🛑 Stop Drawing' : '🧱 Draw Ridge (+5m)';
+      barrierBtn.style.backgroundColor = active ? '#e11d48' : 'rgba(14, 165, 233, 0.25)';
+      barrierBtn.style.color = active ? '#ffffff' : '#38bdf8';
+    }
+    if (barrierBadge) {
+      barrierBadge.textContent = active ? 'Active (Click Map)' : 'Off';
+      barrierBadge.style.color = active ? '#38bdf8' : '#94a3b8';
+    }
+  });
+
+  resetTerrainBtn?.addEventListener('click', () => {
+    if (!simController?.resetTerrain) return;
+    simController.resetTerrain();
+    if (barrierBadge) {
+      barrierBadge.textContent = 'Reset to Base';
+      setTimeout(() => {
+        if (barrierBadge) barrierBadge.textContent = 'Off';
+      }, 1500);
+    }
+  });
 
   // Simulation controls
   const playBtn = document.getElementById('btn-sim-play') as HTMLButtonElement | null;
@@ -397,6 +479,7 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
     const val = Number(rainSlider.value);
     if (rainLabel) rainLabel.textContent = `${val} mm/h`;
     if (simController) simController.setRainRate(val);
+    updateUrlHash();
   });
 
   const cloudburstBtn = document.getElementById('preset-cloudburst');
@@ -407,6 +490,7 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
     simController.setRainRate(130);
     if (rainSlider) rainSlider.value = '130';
     if (rainLabel) rainLabel.textContent = '130 mm/h';
+    updateUrlHash();
     if (!simController.isRunning()) {
       simController.togglePlay();
       if (playBtn) {
@@ -421,6 +505,7 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
     simController.setRainRate(50);
     if (rainSlider) rainSlider.value = '50';
     if (rainLabel) rainLabel.textContent = '50 mm/h';
+    updateUrlHash();
     if (!simController.isRunning()) {
       simController.togglePlay();
       if (playBtn) {
@@ -429,5 +514,73 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
       }
     }
   });
+
+  // URL Hash synchronization logic (F-10 / M3)
+  function updateUrlHash(): void {
+    const center = map.getCenter();
+    const activeLayers: string[] = [];
+    const checkLayer = (id: string, layerId: string) => {
+      const el = document.getElementById(id) as HTMLInputElement | null;
+      if (el && el.checked) {
+        activeLayers.push(layerId);
+      }
+    };
+    checkLayer('toggle-flood-sites', LAYER_IDS.FLOOD_SITES);
+    checkLayer('toggle-ghost-drains', LAYER_IDS.GHOST_DRAINS);
+    checkLayer('toggle-official-swd', LAYER_IDS.OFFICIAL_SWD);
+    checkLayer('toggle-gap-view', LAYER_IDS.GAP_VIEW);
+    checkLayer('toggle-water-sim', LAYER_IDS.WATER_SIM);
+    checkLayer('toggle-ponding', LAYER_IDS.PONDING);
+    checkLayer('toggle-hand', LAYER_IDS.HAND);
+
+    syncHashState({
+      zoom: map.getZoom(),
+      lat: center.lat,
+      lng: center.lng,
+      bearing: map.getBearing(),
+      pitch: map.getPitch(),
+      layers: activeLayers,
+      rain: simController?.getRainRate(),
+    });
+  }
+
+  // Restore initial state from URL hash if provided
+  const initialHash = typeof window !== 'undefined' ? window.location.hash : '';
+  const parsedState = parseHashState(initialHash);
+
+  if (parsedState.rain !== undefined && rainSlider && rainLabel && simController) {
+    rainSlider.value = String(parsedState.rain);
+    rainLabel.textContent = `${parsedState.rain} mm/h`;
+    simController.setRainRate(parsedState.rain);
+  }
+
+  if (parsedState.layers && parsedState.layers.length > 0) {
+    const layerSet = new Set(parsedState.layers);
+    const applyCb = (id: string, layerId: string) => {
+      const el = document.getElementById(id) as HTMLInputElement | null;
+      if (el) {
+        el.checked = layerSet.has(layerId);
+        toggleLayer(map, layerId, el.checked);
+      }
+    };
+    applyCb('toggle-flood-sites', LAYER_IDS.FLOOD_SITES);
+    applyCb('toggle-ghost-drains', LAYER_IDS.GHOST_DRAINS);
+    applyCb('toggle-official-swd', LAYER_IDS.OFFICIAL_SWD);
+    applyCb('toggle-gap-view', LAYER_IDS.GAP_VIEW);
+    applyCb('toggle-water-sim', LAYER_IDS.WATER_SIM);
+    applyCb('toggle-ponding', LAYER_IDS.PONDING);
+    applyCb('toggle-hand', LAYER_IDS.HAND);
+  }
+
+  if (parsedState.zoom !== undefined && parsedState.lat !== undefined && parsedState.lng !== undefined) {
+    map.jumpTo({
+      center: [parsedState.lng, parsedState.lat],
+      zoom: parsedState.zoom,
+      bearing: parsedState.bearing ?? 0,
+      pitch: parsedState.pitch ?? 0,
+    });
+  }
+
+  map.on('moveend', updateUrlHash);
 }
 

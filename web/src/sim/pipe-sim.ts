@@ -512,3 +512,54 @@ export function renderWaterToCanvas(
   ctx.putImageData(imgData, 0, 0);
 }
 
+/**
+ * Paint an artificial barrier/ridge onto the terrain grid (F-07 / M6).
+ * Increases elevation within radiusCells with smooth quadratic falloff.
+ *
+ * @param terrain The mutable terrain elevation array
+ * @param width Grid width
+ * @param height Grid height
+ * @param centerCol Center column (0..width-1)
+ * @param centerRow Center row (0..height-1)
+ * @param radiusCells Radius in grid cells
+ * @param heightDeltaM Elevation increase at center in metres (default +5.0m)
+ */
+export function applyBarrier(
+  terrain: Float32Array,
+  width: number,
+  height: number,
+  centerCol: number,
+  centerRow: number,
+  radiusCells = 2,
+  heightDeltaM = 5.0,
+): void {
+  for (let dr = -radiusCells; dr <= radiusCells; dr++) {
+    const r = centerRow + dr;
+    if (r < 0 || r >= height) continue;
+    for (let dc = -radiusCells; dc <= radiusCells; dc++) {
+      const c = centerCol + dc;
+      if (c < 0 || c >= width) continue;
+      const dist = Math.sqrt(dr * dr + dc * dc);
+      if (dist <= radiusCells) {
+        const falloff = 1.0 - (dist / (radiusCells + 0.5)) * 0.5;
+        const idx = r * width + c;
+        terrain[idx] = (terrain[idx] ?? 0) + heightDeltaM * falloff;
+      }
+    }
+  }
+}
+
+/**
+ * Reset terrain elevation array back to pristine baseline values (F-07 / M6).
+ * Acceptance criteria: Baseline restored exactly bit-for-bit.
+ *
+ * @param currentTerrain The active terrain array to restore
+ * @param baseTerrain The pristine baseline terrain array
+ */
+export function resetTerrain(
+  currentTerrain: Float32Array,
+  baseTerrain: Float32Array,
+): void {
+  currentTerrain.set(baseTerrain);
+}
+

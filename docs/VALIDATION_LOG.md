@@ -215,3 +215,29 @@ Append-only log. Every entry must come from something actually run. Never edit o
 - Decision made (if any) and why:
   - Handled 4 malformed coordinate records in KSRSAC tertiary KML using `pyogrio` with `on_invalid='ignore'`, safely recovering all 5,802 valid tertiary drain polylines.
   - Utilized Shapely `STRtree` candidate querying to reduce gap analysis runtime from indefinite whole-multipolygon union to under 8 seconds.
+
+### 2026-10-06: Milestone M4, M6 & PRD Features F-05, F-07, F-10 Complete
+- Task / spike: F-05 (Ponding/HAND Overlays), F-07 (What-If Barrier Tool), F-10 (URL Hash State Sync), M6 (Validation Lift Metric)
+- Machine: Intel Core i5-8265U (UHD 620), Windows 11, Node.js v24.11.0, Python 3.13.6
+- Inputs:
+  - web/src/map/raster-layers.ts, web/src/sim/pipe-sim.ts, web/src/ui/hash-state.ts, web/src/ui/controls.ts, web/src/main.ts
+- Commands run:
+  1. `npm test --prefix web` (35 passed)
+  2. `npm run build --prefix web` (built in 932ms, 0 errors)
+  3. `pytest pipeline/tests/ -v` (23 passed)
+- Results:
+  - F-05 Ponding & HAND Client Decoders:
+    - Pure functions `computePondingRgba` and `computeHandRgba` decode float32 binary rasters into RGBA canvas overlays draped on MapLibre 3D terrain.
+    - Added UI toggles with plain-language Nobre et al. susceptibility legends.
+  - F-07 What-If Ridge Tool:
+    - Pure function `applyBarrier` places +5.0m elevation ridges with quadratic falloff on mouse click, dynamically rerouting rain runoff in the simulation loop.
+    - `resetTerrain` restores baseline DEM elevation array exactly bit-for-bit.
+  - F-10 URL Hash Synchronization:
+    - Bi-directional synchronization for camera coordinates (`#zoom/lat/lng/bearing/pitch`), active layer toggles (`&layers=...`), and rain intensity (`&rain=...`).
+    - Enables shareable deep links and state preservation across browser refreshes.
+  - M6 Validation Lift Metric:
+    - Integrated V2 Empirical Lift badge into telemetry card: 6.1× over null model (91.7% of Sept 2022 flood points align in high-HAND zones vs 15% city baseline).
+  - All test gates passing: 58 automated tests (35 Vitest + 23 Pytest). Production build 0 errors.
+- Pass / fail against stated condition: PASS
+- Decision made (if any) and why:
+  - Decoded float32 binary rasters on the client via memory-efficient canvas textures, eliminating server-side tile rendering infrastructure while preserving sub-millimeter precision.

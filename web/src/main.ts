@@ -7,15 +7,18 @@
 
 import { initMap } from './map/scene';
 import { initControls, type SimController } from './ui/controls';
-import { loadGeoJSON } from './data/loader';
+import { loadGeoJSON, loadGridMeta, loadBinaryRaster } from './data/loader';
 import { addFloodSitesLayer } from './validate/flood-sites';
-import { addGhostDrainLayer, addOfficialSWDLayer, addGapLayer } from './map/layers';
+import { addGhostDrainLayer, addOfficialSWDLayer, addGapLayer, LAYER_IDS } from './map/layers';
+import { decodePondingCanvas, decodeHandCanvas, registerRasterOverlay } from './map/raster-layers';
 import { registerWaterSource } from './bridge/drape';
 import {
   createState,
   step,
   computeDt,
   renderWaterToCanvas,
+  applyBarrier,
+  resetTerrain,
   type PipeSimConfig,
 } from './sim/pipe-sim';
 import { FlowParticleSystem } from './sim/flow-particles';
@@ -100,8 +103,10 @@ function main(): void {
   };
 
   const terrain = buildBengaluruCatchmentTerrain(simWidth, simHeight, BENGALURU_BBOX);
+  const baseTerrain = new Float32Array(terrain);
   const simState = createState(terrain, simConfig);
   const flowParticles = new FlowParticleSystem(simWidth, simHeight, 1000, BENGALURU_BBOX);
+  let barrierMode = false;
 
   // Lightweight offscreen canvas for soft water drape (160x160 matching physics grid)
   const simCanvas = document.createElement('canvas');
@@ -184,10 +189,35 @@ function main(): void {
       }
     },
     getSimTime: () => simState.simTime,
+    isBarrierMode: () => barrierMode,
+    toggleBarrierMode: () => {
+      barrierMode = !barrierMode;
+      map.getCanvas().style.cursor = barrierMode ? 'crosshair' : '';
+      return barrierMode;
+    },
+    resetTerrain: () => {
+      resetTerrain(simState.terrain, baseTerrain);
+      console.log('[Ghost Drains] Terrain reset to pristine baseline.');
+    },
   };
 
   const map = initMap('map');
   initControls(map, simController);
+
+  // What-If Barrier tool: paint +5m elevation ridge on map click (F-07)
+  map.on('click', (e) => {
+    if (!barrierMode) return;
+    const lng = e.lngLat.lng;
+    const lat = e.lngLat.lat;
+    const [w, s, eB, n] = BENGALURU_BBOX;
+    if (lng < w || lng > eB || lat < s || lat > n) return;
+
+    const col = Math.round(((lng - w) / (eB - w)) * (simWidth - 1));
+    const row = Math.round(((n - lat) / (n - s)) * (simHeight - 1));
+
+    applyBarrier(simState.terrain, simWidth, simHeight, col, row, 2, 5.0);
+    console.log(`[Ghost Drains] Placed ridge barrier (+5m) at grid cell (${col}, ${row}) [${lng.toFixed(4)}, ${lat.toFixed(4)}]`);
+  });
 
   map.on('load', async () => {
     // Setup screen-space overlay canvas for micro-streamlines
@@ -273,6 +303,30 @@ function main(): void {
       console.log(`[Ghost Drains] Loaded gap analysis layer.`);
     } catch (err) {
       console.info('[Ghost Drains] gap.geojson not yet generated (run pipeline P6).');
+    }
+
+    // 4. Load binary raster layers (Ponding & HAND - F-05)
+    try {
+      const meta = await loadGridMeta();
+      try {
+        const depressData = await loadBinaryRaster('depress.f32.bin', meta);
+        const pondingCanvas = decodePondingCanvas(depressData, meta.width, meta.height);
+        registerRasterOverlay(map, LAYER_IDS.PONDING, pondingCanvas, meta.bbox_3857, false);
+        console.log('[Ghost Drains] Loaded and registered Ponding depression raster.');
+      } catch (err) {
+        console.warn('[Ghost Drains] depress.f32.bin not loaded:', err);
+      }
+
+      try {
+        const handData = await loadBinaryRaster('hand.f32.bin', meta);
+        const handCanvas = decodeHandCanvas(handData, meta.width, meta.height);
+        registerRasterOverlay(map, LAYER_IDS.HAND, handCanvas, meta.bbox_3857, false);
+        console.log('[Ghost Drains] Loaded and registered HAND susceptibility raster.');
+      } catch (err) {
+        console.warn('[Ghost Drains] hand.f32.bin not loaded:', err);
+      }
+    } catch (err) {
+      console.warn('[Ghost Drains] grid.meta.json not found:', err);
     }
 
     console.log('[Ghost Drains] Map loaded and configured with all active layers.');

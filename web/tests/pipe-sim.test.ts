@@ -420,3 +420,32 @@ describe('L4-render: renderWaterToCanvas', () => {
   });
 });
 
+describe('L4-barrier: applyBarrier and resetTerrain (F-07 / M6)', () => {
+  it('applies barrier elevation ridge at specified coordinates', async () => {
+    const { applyBarrier, resetTerrain } = await import('../src/sim/pipe-sim');
+    const width = 10;
+    const height = 10;
+    const baseTerrain = new Float32Array(width * height).fill(500);
+    const activeTerrain = new Float32Array(baseTerrain);
+
+    // Center is (5, 5), apply 5.0m barrier
+    applyBarrier(activeTerrain, width, height, 5, 5, 2, 5.0);
+
+    const centerIdx = 5 * width + 5;
+    expect(activeTerrain[centerIdx]).toBeGreaterThan(504); // ~505m at peak
+
+    // Nearby cell within radius should also have increased elevation
+    const nearIdx = 5 * width + 6;
+    expect(activeTerrain[nearIdx]).toBeGreaterThan(501);
+
+    // Far cell outside radius should remain unchanged (500m)
+    const farIdx = 0;
+    expect(activeTerrain[farIdx]).toBe(500);
+
+    // Reset terrain restores baseline exactly bit-for-bit
+    resetTerrain(activeTerrain, baseTerrain);
+    expect(activeTerrain[centerIdx]).toBe(500);
+    expect(activeTerrain).toEqual(baseTerrain);
+  });
+});
+
