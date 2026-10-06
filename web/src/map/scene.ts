@@ -27,6 +27,7 @@ import {
 export function initMap(container: string): maplibregl.Map {
   const map = new maplibregl.Map({
     container,
+    attributionControl: false, // Prevents duplicate default attribution strip
     // Using OpenFreeMap as basemap. Credit: OpenFreeMap, OpenMapTiles, OSM.
     // Source: docs/DATA_SOURCES.md DS-06
     style: 'https://tiles.openfreemap.org/styles/liberty',
@@ -157,7 +158,9 @@ function addSatelliteSource(map: maplibregl.Map): void {
       type: 'raster',
       source: 'satellite',
       paint: {
-        'raster-opacity': 0.92,
+        'raster-opacity': 0.94,
+        'raster-contrast': 0.12,
+        'raster-saturation': 0.08,
         'raster-fade-duration': 150,
       },
     },

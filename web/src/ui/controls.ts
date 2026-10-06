@@ -525,10 +525,14 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
       barrierBtn.textContent = active ? '🛑 Stop Drawing' : '🧱 Draw Ridge (+5m)';
       barrierBtn.style.backgroundColor = active ? '#e11d48' : 'rgba(14, 165, 233, 0.2)';
       barrierBtn.style.color = active ? '#ffffff' : '#38bdf8';
+      barrierBtn.style.boxShadow = active ? '0 0 12px rgba(225, 29, 72, 0.5)' : 'none';
     }
     if (barrierBadge) {
       barrierBadge.textContent = active ? 'Active (Click Map)' : 'Off';
       barrierBadge.style.color = active ? '#38bdf8' : '#94a3b8';
+    }
+    if (active) {
+      showToast('🧱 Ridge Barrier Tool: Click anywhere on map to raise +5m terrain ridge');
     }
   });
 
@@ -541,6 +545,7 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
         if (barrierBadge) barrierBadge.textContent = 'Off';
       }, 1500);
     }
+    showToast('↺ All artificial ridge barriers cleared. Terrain reset to baseline.');
   });
 
   // Simulation controls (Bottom Dock)
@@ -688,4 +693,44 @@ export function openMethodsModal(): void {
   if (modal) {
     modal.style.display = 'flex';
   }
+}
+
+/**
+ * Display a temporary floating HUD toast message.
+ */
+export function showToast(message: string, durationMs = 2800): void {
+  let toast = document.getElementById('app-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'app-toast';
+    toast.style.position = 'fixed';
+    toast.style.top = '62px';
+    toast.style.left = '50%';
+    toast.style.transform = 'translateX(-50%)';
+    toast.style.background = 'rgba(15, 23, 42, 0.95)';
+    toast.style.backdropFilter = 'blur(16px)';
+    toast.style.setProperty('-webkit-backdrop-filter', 'blur(16px)');
+    toast.style.border = '1px solid rgba(56, 189, 248, 0.35)';
+    toast.style.borderRadius = '9999px';
+    toast.style.padding = '6px 16px';
+    toast.style.fontSize = '12px';
+    toast.style.fontWeight = '600';
+    toast.style.color = '#f8fafc';
+    toast.style.boxShadow = '0 12px 28px -4px rgba(0, 0, 0, 0.6), 0 0 16px rgba(56, 189, 248, 0.2)';
+    toast.style.zIndex = '1500';
+    toast.style.pointerEvents = 'none';
+    toast.style.transition = 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+
+  clearTimeout((toast as unknown as { _timeout?: number })._timeout);
+  (toast as unknown as { _timeout?: number })._timeout = window.setTimeout(() => {
+    if (toast) {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(-8px)';
+    }
+  }, durationMs);
 }

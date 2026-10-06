@@ -145,7 +145,7 @@ export function createNavbar(openModalCallback: () => void): HTMLElement {
   basinMenuBtn.style.borderRadius = '6px';
   basinMenuBtn.style.cursor = 'pointer';
   basinMenuBtn.style.transition = 'all 0.15s ease';
-  basinMenuBtn.innerHTML = `<span>📍 Jump to Basin</span><span style="font-size: 8px; color: #94a3b8;">▼</span>`;
+  basinMenuBtn.innerHTML = `<span style="letter-spacing: 0.02em;">📍 Select Basin</span><span style="font-size: 9px; color: #38bdf8;">▾</span>`;
 
   const basinPopover = document.createElement('div');
   basinPopover.style.display = 'none';

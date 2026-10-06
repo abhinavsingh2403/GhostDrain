@@ -6,7 +6,7 @@
  */
 
 import { initMap } from './map/scene';
-import { initControls, openMethodsModal, type SimController } from './ui/controls';
+import { initControls, openMethodsModal, showToast, type SimController } from './ui/controls';
 import { createNavbar } from './ui/navbar';
 import { router } from './router';
 import { createGapRegistryView } from './views/gap-registry-view';
@@ -14,7 +14,15 @@ import { createValidationView } from './views/validation-view';
 import { createMethodologyView } from './views/methodology-view';
 import { loadGeoJSON, loadGridMeta, loadBinaryRaster } from './data/loader';
 import { addFloodSitesLayer } from './validate/flood-sites';
-import { addGhostDrainLayer, addOfficialSWDLayer, addGapLayer, LAYER_IDS } from './map/layers';
+import {
+  addGhostDrainLayer,
+  addOfficialSWDLayer,
+  addGapLayer,
+  initBarrierLayer,
+  addBarrierFeature,
+  clearBarrierFeatures,
+  LAYER_IDS,
+} from './map/layers';
 import { decodePondingCanvas, decodeHandCanvas, registerRasterOverlay } from './map/raster-layers';
 import { registerWaterSource } from './bridge/drape';
 import {
@@ -207,7 +215,13 @@ function main(): void {
     },
     resetTerrain: () => {
       resetTerrain(simState.terrain, baseTerrain);
-      console.log('[Ghost Drains] Terrain reset to pristine baseline.');
+      clearBarrierFeatures(map);
+      const badge = document.getElementById('badge-barrier-status');
+      if (badge) {
+        badge.textContent = 'Off';
+        badge.style.color = '#94a3b8';
+      }
+      console.log('[Ghost Drains] Terrain reset to pristine baseline and all barriers cleared.');
     },
   };
 
@@ -258,10 +272,26 @@ function main(): void {
     const row = Math.round(((n - lat) / (n - s)) * (simHeight - 1));
 
     applyBarrier(simState.terrain, simWidth, simHeight, col, row, 2, 5.0);
-    console.log(`[Ghost Drains] Placed ridge barrier (+5m) at grid cell (${col}, ${row}) [${lng.toFixed(4)}, ${lat.toFixed(4)}]`);
+    const count = addBarrierFeature(map, [lng, lat]);
+
+    const badge = document.getElementById('badge-barrier-status');
+    if (badge) {
+      badge.textContent = `${count} Ridge${count > 1 ? 's' : ''} (+5m)`;
+      badge.style.color = '#fb923c';
+    }
+
+    showToast(`🧱 Ridge Barrier #${count} placed (+5m elevation ridge)`);
+    console.log(`[Ghost Drains] Placed ridge barrier #${count} (+5m) at grid cell (${col}, ${row}) [${lng.toFixed(4)}, ${lat.toFixed(4)}]`);
   });
 
   map.on('load', async () => {
+    // Initialize What-If Ridge Barrier visual layer
+    try {
+      initBarrierLayer(map);
+    } catch (e) {
+      console.warn('[Ghost Drains] Barrier layer init error:', e);
+    }
+
     // Setup screen-space overlay canvas for micro-streamlines
     try {
       flowOverlay = document.createElement('canvas');
