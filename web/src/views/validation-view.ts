@@ -12,7 +12,7 @@ export function createValidationView(): HTMLElement {
   const container = document.createElement('div');
   container.id = 'view-validation';
   container.style.position = 'absolute';
-  container.style.top = '52px';
+  container.style.top = '48px';
   container.style.left = '0';
   container.style.right = '0';
   container.style.bottom = '0';

@@ -178,6 +178,11 @@ function main(): void {
     getRainRate: () => simConfig.rainMmH,
     resetSim: () => {
       simRunning = false;
+      const playBtn = document.getElementById('btn-sim-play');
+      if (playBtn) {
+        playBtn.innerHTML = '<span>▶</span><span>Start Replay</span>';
+        playBtn.style.background = 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)';
+      }
       simState.water.fill(0);
       simState.flux.fill(0);
       simState.simTime = 0;

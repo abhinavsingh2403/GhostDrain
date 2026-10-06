@@ -257,17 +257,17 @@ function enhanceWaterAndBuildings(map: maplibregl.Map): void {
 function addAttribution(map: maplibregl.Map): void {
   map.addControl(
     new maplibregl.AttributionControl({
-      compact: false,
+      compact: true,
       customAttribution: [
-        '© <a href="https://www.esri.com">Esri</a>, Maxar',
-        '© <a href="https://openfreemap.org">OpenFreeMap</a>',
-        '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        '© <a href="https://mapterhorn.com/attribution">Mapterhorn</a>',
+        '© <a href="https://www.esri.com" target="_blank">Esri</a>',
+        '© <a href="https://openfreemap.org" target="_blank">OpenFreeMap</a>',
+        '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OSM</a>',
+        '© <a href="https://mapterhorn.com/attribution" target="_blank">Mapterhorn</a>',
       ],
     }),
     'bottom-right',
   );
 
-  map.addControl(new maplibregl.NavigationControl(), 'top-right');
-  map.addControl(new maplibregl.ScaleControl({ maxWidth: 200, unit: 'metric' }), 'bottom-left');
+  map.addControl(new maplibregl.NavigationControl({ showCompass: true, visualizePitch: true }), 'bottom-right');
+  map.addControl(new maplibregl.ScaleControl({ maxWidth: 160, unit: 'metric' }), 'bottom-left');
 }
