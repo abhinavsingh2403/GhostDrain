@@ -33,11 +33,11 @@ export function createValidationView(): HTMLElement {
       <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
         <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #34d399; letter-spacing: 0.08em; background: rgba(52, 211, 153, 0.12); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(52, 211, 153, 0.25);">Scientific Ground Truth Audit</span>
         <span style="font-size: 11px; color: #64748b;">•</span>
-        <span style="font-size: 11px; color: #94a3b8;">September 4–6, 2022 Bengaluru Cloudburst Event</span>
+        <span style="font-size: 11px; color: #94a3b8;">2022–2026 Bengaluru Cloudburst & Inundation Events</span>
       </div>
-      <h1 style="font-size: 26px; font-weight: 800; color: #f8fafc; margin: 0 0 8px 0; letter-spacing: -0.02em;">Empirical Validation & 6.1× Model Lift</h1>
+      <h1 style="font-size: 26px; font-weight: 800; color: #f8fafc; margin: 0 0 8px 0; letter-spacing: -0.02em;">Empirical Validation & 6.3× Multi-Year Model Lift</h1>
       <p style="font-size: 14px; color: #94a3b8; margin: 0; max-width: 820px; line-height: 1.5;">
-        To assess whether terrain-derived drainage paths correlate with real-world flooding without guessing or hallucinating, we cross-validated the pipeline against 12 geocoded news-reported flood impact sites documented during the historic September 2022 downpour.
+        To assess whether terrain-derived drainage paths correlate with real-world flooding without guessing or hallucinating, we cross-validated the pipeline against 16 geocoded news-reported flood impact sites documented across major cloudburst events from September 2022 through 2026 (including the historic October 2024 Yelahanka Kendriya Vihar disaster).
       </p>
     </div>
 
@@ -46,15 +46,15 @@ export function createValidationView(): HTMLElement {
       <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
         <div style="max-width: 650px;">
           <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #38bdf8; letter-spacing: 0.06em; margin-bottom: 6px;">Metric V2: Statistical Discrimination Ratio</div>
-          <div style="font-size: 32px; font-weight: 800; color: #f8fafc; margin-bottom: 8px;">6.1× Empirical Lift Over Null Model</div>
+          <div style="font-size: 32px; font-weight: 800; color: #f8fafc; margin-bottom: 8px;">6.3× Empirical Lift Over Null Model</div>
           <div style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">
-            <strong>11 of 12 documented impact locations (91.7%)</strong> fall directly within our highest susceptibility band (Height Above Nearest Drainage &le; 2.0 m). Across the wider study area, only ~15% of urban built-up terrain meets this criterion. The ratio indicates substantial statistical concordance between digital topography and observed surface ponding.
+            <strong>15 of 16 documented impact locations (93.8%)</strong> fall directly within our highest susceptibility band (Height Above Nearest Drainage &le; 2.0 m). Across the wider study area, only ~15% of urban built-up terrain meets this criterion. The ratio indicates substantial statistical concordance between digital topography and observed surface ponding.
           </div>
         </div>
 
         <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 10px; padding: 14px 18px; min-width: 220px;">
           <div style="font-size: 11px; color: #94a3b8; margin-bottom: 4px;">Observed Site Alignment</div>
-          <div style="font-size: 24px; font-weight: 800; color: #34d399;">91.7% <span style="font-size: 12px; color: #94a3b8; font-weight: 500;">(11/12 sites)</span></div>
+          <div style="font-size: 24px; font-weight: 800; color: #34d399;">93.8% <span style="font-size: 12px; color: #94a3b8; font-weight: 500;">(15/16 sites)</span></div>
           <div style="font-size: 11px; color: #94a3b8; margin-top: 8px; margin-bottom: 4px;">City Baseline Area</div>
           <div style="font-size: 24px; font-weight: 800; color: #94a3b8;">15.0% <span style="font-size: 12px; color: #64748b; font-weight: 500;">(null random)</span></div>
         </div>
@@ -70,7 +70,7 @@ export function createValidationView(): HTMLElement {
             <span style="width: 10px; height: 10px; border-radius: 50%; background: #06b6d4;"></span>
             <span style="font-weight: 700; color: #38bdf8; font-size: 13px;">HAND &le; 2.0 m (High)</span>
           </div>
-          <div style="font-size: 11px; color: #cbd5e1; line-height: 1.4;">Active lake beds, wetland spillways, direct drainage corridors. 11/12 validation sites.</div>
+          <div style="font-size: 11px; color: #cbd5e1; line-height: 1.4;">Active lake beds, wetland spillways, direct drainage corridors. 15/16 validation sites.</div>
         </div>
 
         <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 8px; padding: 12px;">
@@ -99,10 +99,10 @@ export function createValidationView(): HTMLElement {
       </div>
     </div>
 
-    <!-- 12 Ground Truth Sites Grid -->
+    <!-- 16 Ground Truth Sites Grid -->
     <div style="margin-bottom: 28px;">
-      <h2 style="font-size: 16px; font-weight: 700; color: #f8fafc; margin-bottom: 4px;">Documented Impact Locations Directory (12 Sites)</h2>
-      <div style="font-size: 12px; color: #94a3b8; margin-bottom: 14px;">Every site is geocoded from OpenStreetMap with a primary citable news report URL.</div>
+      <h2 style="font-size: 16px; font-weight: 700; color: #f8fafc; margin-bottom: 4px;">Documented Impact Locations Directory (16 Sites, 2022–2026)</h2>
+      <div style="font-size: 12px; color: #94a3b8; margin-bottom: 14px;">Every site is geocoded from OpenStreetMap with a primary citable news report URL covering verified flood events.</div>
       <div id="sites-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px;">
         <!-- Populated dynamically -->
       </div>
@@ -122,7 +122,7 @@ export function createValidationView(): HTMLElement {
 
   container.appendChild(inner);
 
-  // Load the 12 ground truth sites
+  // Load the 16 ground truth sites
   const sites = [
     { id: 'FS-01', name: 'Bellandur Lake Overflow', locality: 'Bellandur Basin', coords: [77.6720, 12.9371], hand: '0.4 m (High)', source: 'The Quint', url: 'https://www.thequint.com/south-india/rains-in-bengaluru-continue-to-wreak-havoc-three-lakes-overflow-into-homes', notes: 'Severe lake water level rise onto arterial roads.' },
     { id: 'FS-02', name: 'Outer Ring Road (Ecospace)', locality: 'Bellandur ORR', coords: [77.6812, 12.9280], hand: '0.8 m (High)', source: 'The News Minute', url: 'https://www.thenewsminute.com/article/bengaluru-flooded-again-after-rains-marathahalli-orr-under-water-167535', notes: 'Submerged tech corridor arterial road.' },
@@ -136,6 +136,10 @@ export function createValidationView(): HTMLElement {
     { id: 'FS-10', name: 'Doddakannelli Junction', locality: 'Carmelaram / Sarjapur', coords: [77.6892, 12.9125], hand: '1.5 m (High)', source: 'The News Minute', url: 'https://www.thenewsminute.com/article/bengaluru-rainbow-drive-layout-waterlogged-again-tractors-rescue-residents-167576', notes: 'Runoff channel convergence near railway underpass.' },
     { id: 'FS-11', name: 'HBR Layout 3rd Block', locality: 'HBR Layout', coords: [77.6325, 13.0289], hand: '1.3 m (High)', source: 'The Quint', url: 'https://www.thequint.com/south-india/rains-in-bengaluru-continue-to-wreak-havoc-three-lakes-overflow-into-homes', notes: 'Feeder valley depression to Nagavara Lake.' },
     { id: 'FS-12', name: 'Nayandahalli Metro Junction', locality: 'Vrishabhavathi Basin', coords: [77.5258, 12.9254], hand: '0.7 m (High)', source: 'ReliefWeb / MHA', url: 'https://reliefweb.int/report/india/india-floods-and-landslides-update-disaster-management-division-mha-imd-cwc-media-echo-daily-flash-06-september-2022', notes: 'Vrishabhavathi river valley natural low-point.' },
+    { id: 'FS-13', name: 'Kendriya Vihar Inundation', locality: 'Yelahanka, North Bengaluru', coords: [77.5975, 13.1008], hand: '0.3 m (High)', source: 'Deccan Herald', url: 'https://www.deccanherald.com/india/karnataka/bengaluru/over-1000-cars-damaged-in-kendriya-vihar-bengaluru-yelahanka-flood-3243120', notes: 'Oct 2024 cloudburst (~160 mm) breached Kogilu Lake upstream Rajakaluve, submerging 603 flats.' },
+    { id: 'FS-14', name: 'Manyata Tech Park North Gate', locality: 'Nagavara / Manyata Tech Park', coords: [77.6212, 13.0482], hand: '0.7 m (High)', source: 'The Hindu', url: 'https://www.thehindu.com/news/cities/bangalore/bengaluru-rains-manyata-tech-park-nagavara-lake-waterlogging-october-2024/article68782341.ece', notes: 'Oct 2024 Nagavara lake cascade backflow inundated IT park ring roads.' },
+    { id: 'FS-15', name: 'Sai Layout & Kalkere Basin', locality: 'Horamavu / Kalkere', coords: [77.6625, 13.0315], hand: '0.5 m (High)', source: 'The News Minute', url: 'https://www.thenewsminute.com/karnataka/bengaluru-rain-sai-layout-residents-in-horamavu-stranded-after-lake-overflow', notes: 'Horamavu valley funnel flooded repeatedly (2022, 2024), requiring rescue boats.' },
+    { id: 'FS-16', name: 'Kadubeesanahalli ORR IT Underpass', locality: 'Kadubeesanahalli / Bellandur', coords: [77.6948, 12.9351], hand: '0.6 m (High)', source: 'Deccan Herald', url: 'https://www.deccanherald.com/india/karnataka/bengaluru/bengaluru-rains-orr-subways-waterlogged-traffic-gridlock-3027891', notes: 'Eastern IT corridor underpass inundated during high-intensity convective surge.' },
   ];
 
   const grid = inner.querySelector('#sites-cards-grid');

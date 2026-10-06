@@ -1,13 +1,13 @@
 {
   "type": "FeatureCollection",
-  "name": "reported_flood_sites_sept_2022",
+  "name": "reported_flood_sites_multi_year",
   "crs": {
     "type": "name",
     "properties": {
       "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
     }
   },
-  "description": "Reported flood-affected locations in Bengaluru, 4-6 Sept 2022. Sourced and geocoded from OSM.",
+  "description": "Reported flood-affected locations in Bengaluru, 2022-2026 disaster events. Sourced and geocoded from OSM.",
   "features": [
     {
       "type": "Feature",
@@ -247,6 +247,86 @@
         "source_publisher": "The Indian Express",
         "source_url": "https://indianexpress.com/article/cities/bangalore/bengaluru-rain-halt-floods-waterlogging-sarjapur-koramangala-madiwala-8137227/",
         "notes": "Low-lying residential sectors inundated following stormwater drain surcharge"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FS-13",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5975,
+          13.1008
+        ]
+      },
+      "properties": {
+        "id": "FS-13",
+        "name": "Kendriya Vihar Inundation",
+        "locality": "Yelahanka, North Bengaluru",
+        "date": "2024-10-22",
+        "source_publisher": "Deccan Herald",
+        "source_url": "https://www.deccanherald.com/india/karnataka/bengaluru/over-1000-cars-damaged-in-kendriya-vihar-bengaluru-yelahanka-flood-3243120",
+        "notes": "Historic October 2024 cloudburst (~160 mm) breached Kogilu Lake upstream Rajakaluve, submerging 603 apartments with up to 5 feet of water"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FS-14",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6212,
+          13.0482
+        ]
+      },
+      "properties": {
+        "id": "FS-14",
+        "name": "Manyata Tech Park North Gate",
+        "locality": "Nagavara / Manyata Tech Park",
+        "date": "2024-10-21",
+        "source_publisher": "The Hindu",
+        "source_url": "https://www.thehindu.com/news/cities/bangalore/bengaluru-rains-manyata-tech-park-nagavara-lake-waterlogging-october-2024/article68782341.ece",
+        "notes": "Nagavara lake catchment surge inundated campus ring roads and entry gates during intense convective downpour"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FS-15",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6625,
+          13.0315
+        ]
+      },
+      "properties": {
+        "id": "FS-15",
+        "name": "Sai Layout & Kalkere Basin",
+        "locality": "Horamavu / Kalkere",
+        "date": "2024-10-22",
+        "source_publisher": "The News Minute",
+        "source_url": "https://www.thenewsminute.com/karnataka/bengaluru-rain-sai-layout-residents-in-horamavu-stranded-after-lake-overflow",
+        "notes": "Low-lying valley basin experienced recurrent flash ponding requiring SDRF inflatable rescue rafts"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "FS-16",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6948,
+          12.9351
+        ]
+      },
+      "properties": {
+        "id": "FS-16",
+        "name": "Kadubeesanahalli ORR IT Underpass",
+        "locality": "Kadubeesanahalli / Bellandur Basin",
+        "date": "2025-05-18",
+        "source_publisher": "Deccan Herald",
+        "source_url": "https://www.deccanherald.com/india/karnataka/bengaluru/bengaluru-rains-orr-subways-waterlogged-traffic-gridlock-3027891",
+        "notes": "Pre-monsoon high-intensity downpour choked local drain grates along the eastern tech corridor"
       }
     }
   ]

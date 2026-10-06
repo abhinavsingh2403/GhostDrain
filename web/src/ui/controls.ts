@@ -17,6 +17,7 @@ import { toggleLayer, LAYER_IDS } from '../map/layers';
 import { FpsMeter } from './fps-meter';
 import { LIMITATIONS_TEXT } from './limitations';
 import { parseHashState, syncHashState } from './hash-state';
+import { fetchLiveBengaluruWeather } from '../data/weather-service';
 
 export interface SimController {
   isRunning: () => boolean;
@@ -243,6 +244,7 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
     <div style="display: flex; align-items: center; gap: 4px;">
       <button id="preset-monsoon" title="Typical Monsoon: 50 mm/h" style="padding: 4px 8px; font-size: 10px; font-weight: 600; background: rgba(51, 65, 85, 0.6); border: 1px solid rgba(148, 163, 184, 0.25); color: #cbd5e1; border-radius: 9999px; cursor: pointer; transition: all 0.15s ease;">🌦️ 50 mm/h</button>
       <button id="preset-cloudburst" title="Sept 2022 Cloudburst: 130 mm/h" style="padding: 4px 8px; font-size: 10px; font-weight: 600; background: rgba(14, 165, 233, 0.2); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; border-radius: 9999px; cursor: pointer; transition: all 0.15s ease;">🌧️ 130 mm/h</button>
+      <button id="btn-live-weather" title="Sync live Open-Meteo precipitation & cloudburst forecast for Bengaluru" style="padding: 4px 8px; font-size: 10px; font-weight: 600; background: rgba(52, 211, 153, 0.15); border: 1px solid rgba(52, 211, 153, 0.35); color: #34d399; border-radius: 9999px; cursor: pointer; transition: all 0.15s ease;">⚡ Live Weather</button>
     </div>
 
     <span style="color: rgba(148, 163, 184, 0.25);">|</span>
@@ -613,6 +615,59 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
       }
     }
   });
+
+  // Live Open-Meteo Weather Synchronization
+  const liveWeatherBtn = document.getElementById('btn-live-weather') as HTMLButtonElement | null;
+
+  liveWeatherBtn?.addEventListener('click', async () => {
+    if (!simController) return;
+    if (liveWeatherBtn) liveWeatherBtn.textContent = '⏳ Fetching...';
+    try {
+      const weather = await fetchLiveBengaluruWeather();
+      let targetRate = weather.precipitationMmH;
+      let toastMsg = '';
+
+      if (weather.precipitationMmH > 0.5) {
+        toastMsg = `⚡ Live Bengaluru Rain: ${weather.weatherDescription} (${weather.precipitationMmH} mm/h, ${weather.temperatureC}°C)`;
+      } else {
+        // If dry right now, simulate today's peak forecast or default
+        targetRate = weather.peakForecastTodayMmH > 0 ? weather.peakForecastTodayMmH : 45;
+        toastMsg = `☀️ Live: Dry (${weather.temperatureC}°C, ${weather.weatherDescription}). Simulating 24h peak forecast (${targetRate} mm/h)`;
+      }
+
+      simController.setRainRate(targetRate);
+      if (rainSlider) rainSlider.value = String(targetRate);
+      if (rainLabel) rainLabel.textContent = `${targetRate} mm/h`;
+      if (liveWeatherBtn) {
+        liveWeatherBtn.innerHTML = `⚡ ${weather.isRaining ? '🌧️' : '⛅'} ${weather.temperatureC}°C`;
+        liveWeatherBtn.title = `Updated at ${weather.updatedAt}: ${weather.weatherDescription}`;
+      }
+      updateUrlHash();
+
+      if (!simController.isRunning()) {
+        simController.togglePlay();
+        if (playBtn) {
+          playBtn.innerHTML = '<span>⏸</span><span>Pause</span>';
+          playBtn.style.background = 'linear-gradient(135deg, #e11d48 0%, #be123c 100%)';
+        }
+      }
+
+      showToast(toastMsg, 3500);
+    } catch {
+      if (liveWeatherBtn) liveWeatherBtn.textContent = '⚡ Live Weather';
+      showToast('⚠️ Weather telemetry offline. Replay controls active.');
+    }
+  });
+
+  // Background fetch on boot to update live weather pill badge
+  fetchLiveBengaluruWeather()
+    .then((w) => {
+      if (liveWeatherBtn) {
+        liveWeatherBtn.innerHTML = `⚡ ${w.isRaining ? '🌧️ ' + w.precipitationMmH + 'mm' : w.temperatureC + '°C'}`;
+        liveWeatherBtn.title = `Live Bengaluru: ${w.weatherDescription}, ${w.temperatureC}°C (Peak today: ${w.peakForecastTodayMmH} mm/h)`;
+      }
+    })
+    .catch(() => {});
 
   // URL Hash synchronization logic (F-10 / M3)
   function updateUrlHash(): void {
