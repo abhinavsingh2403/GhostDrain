@@ -47,19 +47,36 @@ export class FlowParticleSystem {
     }
   }
 
-  spawnArrow(): GeoFlowArrow {
+  spawnArrow(bounds?: { west: number; south: number; east: number; north: number }): GeoFlowArrow {
     const [w, s, e, n] = this.bbox;
-    const marginLon = (e - w) * 0.04;
-    const marginLat = (n - s) * 0.04;
+    let minLon = w;
+    let maxLon = e;
+    let minLat = s;
+    let maxLat = n;
+
+    // Viewport-focused density: 85% of particles spawn directly in the active screen area
+    if (bounds) {
+      if (Math.random() < 0.85) {
+        const spanLon = bounds.east - bounds.west;
+        const spanLat = bounds.north - bounds.south;
+        minLon = Math.max(w, bounds.west - spanLon * 0.15);
+        maxLon = Math.min(e, bounds.east + spanLon * 0.15);
+        minLat = Math.max(s, bounds.south - spanLat * 0.15);
+        maxLat = Math.min(n, bounds.north + spanLat * 0.15);
+      }
+    }
+
+    const marginLon = (maxLon - minLon) * 0.02;
+    const marginLat = (maxLat - minLat) * 0.02;
     return {
-      lon: w + marginLon + Math.random() * (e - w - 2 * marginLon),
-      lat: s + marginLat + Math.random() * (n - s - 2 * marginLat),
+      lon: minLon + marginLon + Math.random() * Math.max(1e-5, maxLon - minLon - 2 * marginLon),
+      lat: minLat + marginLat + Math.random() * Math.max(1e-5, maxLat - minLat - 2 * marginLat),
       vx: 0,
       vy: 0,
-      speed: 0.000055 + Math.random() * 0.000045,
+      speed: 0.000075 + Math.random() * 0.000055,
       age: Math.floor(Math.random() * 45),
-      maxAge: 75 + Math.floor(Math.random() * 50),
-      tailLength: 11 + Math.random() * 5, // 11-16 screen pixels
+      maxAge: 70 + Math.floor(Math.random() * 50),
+      tailLength: 10 + Math.random() * 6, // 10-16 screen pixels
     };
   }
 
@@ -91,6 +108,24 @@ export class FlowParticleSystem {
     ctx.clearRect(0, 0, screenW, screenH);
     if (!isRaining) return;
 
+    // Probe current camera viewport bounds for focused spawning
+    let vpBounds: { west: number; south: number; east: number; north: number } | undefined;
+    if (typeof (map as any).getBounds === 'function') {
+      try {
+        const b = (map as any).getBounds();
+        if (b) {
+          vpBounds = {
+            west: b.getWest(),
+            south: b.getSouth(),
+            east: b.getEast(),
+            north: b.getNorth(),
+          };
+        }
+      } catch {
+        // Fallback if map bounds not yet calculated
+      }
+    }
+
     ctx.save();
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -107,7 +142,7 @@ export class FlowParticleSystem {
         a.lat < s ||
         a.lat > n
       ) {
-        this.arrows[i] = this.spawnArrow();
+        this.arrows[i] = this.spawnArrow(vpBounds);
         continue;
       }
 
@@ -116,7 +151,7 @@ export class FlowParticleSystem {
       const row = Math.floor(((n - a.lat) / (n - s)) * (gridHeight - 1));
 
       if (col < 1 || col >= gridWidth - 1 || row < 1 || row >= gridHeight - 1) {
-        this.arrows[i] = this.spawnArrow();
+        this.arrows[i] = this.spawnArrow(vpBounds);
         continue;
       }
 

@@ -6,7 +6,12 @@
  */
 
 import { initMap } from './map/scene';
-import { initControls, type SimController } from './ui/controls';
+import { initControls, openMethodsModal, type SimController } from './ui/controls';
+import { createNavbar } from './ui/navbar';
+import { router } from './router';
+import { createGapRegistryView } from './views/gap-registry-view';
+import { createValidationView } from './views/validation-view';
+import { createMethodologyView } from './views/methodology-view';
 import { loadGeoJSON, loadGridMeta, loadBinaryRaster } from './data/loader';
 import { addFloodSitesLayer } from './validate/flood-sites';
 import { addGhostDrainLayer, addOfficialSWDLayer, addGapLayer, LAYER_IDS } from './map/layers';
@@ -105,7 +110,7 @@ function main(): void {
   const terrain = buildBengaluruCatchmentTerrain(simWidth, simHeight, BENGALURU_BBOX);
   const baseTerrain = new Float32Array(terrain);
   const simState = createState(terrain, simConfig);
-  const flowParticles = new FlowParticleSystem(simWidth, simHeight, 1000, BENGALURU_BBOX);
+  const flowParticles = new FlowParticleSystem(simWidth, simHeight, 3500, BENGALURU_BBOX);
   let barrierMode = false;
 
   // Lightweight offscreen canvas for soft water drape (160x160 matching physics grid)
@@ -203,6 +208,38 @@ function main(): void {
 
   const map = initMap('map');
   initControls(map, simController);
+
+  // Mount navigation bar and multi-page views
+  const appRoot = document.getElementById('app-root') ?? document.body;
+  const navbar = createNavbar(openMethodsModal);
+  appRoot.appendChild(navbar);
+
+  const gapRegistryView = createGapRegistryView();
+  const validationView = createValidationView();
+  const methodologyView = createMethodologyView();
+
+  appRoot.appendChild(gapRegistryView);
+  appRoot.appendChild(validationView);
+  appRoot.appendChild(methodologyView);
+
+  // Register views with application router
+  router.setMap(map);
+  const mapViewEl = document.getElementById('view-map') ?? document.getElementById('map')!;
+  router.registerView('map', mapViewEl);
+  router.registerView('gaps', gapRegistryView);
+  router.registerView('validation', validationView);
+  router.registerView('methodology', methodologyView);
+
+  // Keep HUD overlay synced with map view visibility
+  router.onPageChange((page) => {
+    const hud = document.getElementById('hud-container');
+    if (hud) {
+      hud.style.display = page === 'map' ? 'block' : 'none';
+    }
+  });
+
+  // Initialize view from URL hash
+  router.init();
 
   // What-If Barrier tool: paint +5m elevation ridge on map click (F-07)
   map.on('click', (e) => {

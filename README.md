@@ -19,12 +19,17 @@ The project includes an illustrative, virtual-pipe shallow-water rain replay eng
 ## Key Features
 
 - **Sub-Meter 3D Terrain & Satellite Drape**: Rendered in MapLibre GL JS with Terrarium elevation encoding and high-resolution ESRI World Imagery (up to zoom 19).
+- **Multi-Page Analytical Portal**: Seamless client-side application router switching across 4 dedicated views:
+  1. `3D Terrain & Sim Explorer`: 3D satellite globe, interactive hydrology toggles, and What-If Barrier tool.
+  2. `Drainage Gap Registry`: Searchable BBMP ward-level inventory of all 871 spatial gap corridors with direct 3D fly-to triggers.
+  3. `Ground Truth Validation & 6.1× Lift Audit`: Full scientific audit of 12 documented Sept 2022 flood impact sites and Nobre et al. HAND classification matrix.
+  4. `Science & Methodology Guide`: Complete theoretical documentation of Priority-Flood, D8 routing, and Mei virtual-pipe numerics.
 - **Natural Streamline Extraction**: D8 steepest-descent flow direction and accumulation derived from 1 arc-second (~30 m) Copernicus GLO-30 DEM, extracting **1,028** natural valley streamlines.
 - **Official SWD Integration**: Unified ingestion of **6,835** primary, secondary, and tertiary stormwater drain segments published by KSRSAC / OpenCity.in.
 - **STRtree Spatial Gap Analysis**: Automated spatial buffer difference (60 m threshold) detecting **871** unmapped natural flow path segments that lack mapped municipal drains.
 - **Ponding & Depression Retention**: Priority-Flood conditioning (Wang & Liu 2006) retaining the depression depth raster (`depress_depth.tif`, up to 21.69 m depth) rather than flattening lake basins.
 - **Height Above Nearest Drainage (HAND)**: Hydrological susceptibility classification following Nobre et al. (mean HAND across Bengaluru: 10.7 m).
-- **Interactive Rain Replay**: Virtual-pipe shallow-water equations (Mei, Decaudin, Hu 2007) with dynamic rain intensities (50 mm/h monsoon, 130 mm/h Sept 2022 cloudburst scenarios) and 1,000 screen-projected flow arrows.
+- **Hyper-Dense Rain Flow Streamlines**: 3,500 screen-projected micro-vector arrows with 85% viewport-density spawning, rendering vibrant, continuous surface runoff dynamics at 60 FPS across both panoramic city views and local neighborhood basins.
 - **Ground Truth Validation Overlay**: 12 verified Sept 2022 flood hotspot locations (Ecospace ORR, Rainbow Drive, Central Silk Board, Bellandur, etc.) with primary source citations.
 - **Zero-Stall Performance**: Optimized for standard laptops (Intel UHD 620, ~8 GB RAM) sustaining 60.0 FPS (< 16.6 ms frame latency).
 

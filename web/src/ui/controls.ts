@@ -43,7 +43,7 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
   const perfCard = document.createElement('div');
   perfCard.id = 'perf-card';
   perfCard.style.position = 'absolute';
-  perfCard.style.top = '16px';
+  perfCard.style.top = '60px';
   perfCard.style.left = '16px';
   perfCard.style.pointerEvents = 'auto';
   perfCard.style.background = 'linear-gradient(145deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.88) 100%)';
@@ -98,7 +98,7 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
   const flyToBar = document.createElement('div');
   flyToBar.id = 'fly-to-bar';
   flyToBar.style.position = 'absolute';
-  flyToBar.style.top = '16px';
+  flyToBar.style.top = '60px';
   flyToBar.style.left = '50%';
   flyToBar.style.transform = 'translateX(-50%)';
   flyToBar.style.pointerEvents = 'auto';
@@ -162,7 +162,7 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
   const simCard = document.createElement('div');
   simCard.id = 'sim-layers-card';
   simCard.style.position = 'absolute';
-  simCard.style.top = '310px';
+  simCard.style.top = '350px';
   simCard.style.left = '16px';
   simCard.style.pointerEvents = 'auto';
   simCard.style.background = 'linear-gradient(145deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.90) 100%)';
@@ -172,7 +172,7 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
   simCard.style.borderRadius = '10px';
   simCard.style.padding = '12px 14px';
   simCard.style.width = '240px';
-  simCard.style.maxHeight = 'calc(100vh - 330px)';
+  simCard.style.maxHeight = 'calc(100vh - 370px)';
   simCard.style.overflowY = 'auto';
   simCard.style.boxShadow = '0 12px 24px -4px rgba(0, 0, 0, 0.45)';
 
@@ -374,7 +374,7 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
     </div>
   `;
   modal.appendChild(modalContent);
-  container.appendChild(modal);
+  document.body.appendChild(modal);
 
   document.body.appendChild(container);
 
@@ -667,5 +667,15 @@ export function initControls(map: maplibregl.Map, simController?: SimController)
   }
 
   map.on('moveend', updateUrlHash);
+}
+
+/**
+ * Open the Methods, Limitations & Validation modal dialog.
+ */
+export function openMethodsModal(): void {
+  const modal = document.getElementById('limits-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+  }
 }
 
